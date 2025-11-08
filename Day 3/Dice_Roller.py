@@ -1,5 +1,3 @@
-review my code
-
 import random
 
 first_try = True
