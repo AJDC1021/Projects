@@ -9,7 +9,7 @@ def book_management(books: dict):
 
     while True:
         print(" ")
-        print("MENU")
+        print("BOOK MANAGEMENT MENU")
         print("[1] Add Book")
         print("[2] Delete Book")
         print("[3] Delete All Book")
@@ -19,13 +19,13 @@ def book_management(books: dict):
         print("[0] Exit")
         choice = input("Input your choice: ")
         if choice == "0":
-            print("Bye!")
             break
         elif choice == "1":
             new_entry.clear()
             print("")
             Id = input("Input book id (format B<number?):")
-            if Id[0].upper() != "B":
+            Id = Id[0].upper() + Id[1:]
+            if Id[0] != "B":
                 print("Error! Invalid Book Format.")
                 continue
 
@@ -46,8 +46,17 @@ def book_management(books: dict):
                 print("Book ID already taken")
 
             Title = input("Enter title of book: ")
+            if not Title:
+                print("Input required")
+                continue
             Author = input("Enter author of book: ")
+            if not Author:
+                print("Input required")
+                continue
             Date_init = input("Enter date of publish (format 1 Jan 2000): ")
+            if not Date_init:
+                print("Input required")
+                continue
             try:
                 date_object = datetime.datetime.strptime(Date_init, format_string).date()
             except ValueError:
@@ -71,7 +80,13 @@ def book_management(books: dict):
             to_delete = []
             print("")
             title_finder = input("Enter Title of book to delete: ")
+            if not title_finder:
+                print("Input required")
+                continue
             author_finder = input("Enter Author of book to delete: ")
+            if not author_finder:
+                print("Input required")
+                continue
 
             for key,value in books.items():
                 if value[0] == title_finder and value[1] == author_finder:
@@ -119,11 +134,14 @@ def book_management(books: dict):
                 continue
             found = False
             found_books = []
-            title_to_delete = input("What is the title of the book you want to view? ")
+            title_to_view = input("What is the title of the book you want to view? ")
+            if not title_to_view:
+                print("Input required")
+                continue
 
 
             for key,value in books.items():
-                if value[0] == title_to_delete:
+                if value[0] == title_to_view:
                     found_books.append(key)
                     found = True
             
@@ -180,11 +198,14 @@ def book_management(books: dict):
                 continue
             found = False
             found_books = []
-            title_to_delete = input("What is the title of the book you want to delete? ")
+            title_to_edit = input("What is the title of the book you want to edit? ")
+            if not title_to_edit:
+                print("Input required")
+                continue
 
 
             for key,value in books.items():
-                if value[0] == title_to_delete:
+                if value[0] == title_to_edit:
                     found_books.append(key)
                     found = True
             
@@ -263,6 +284,9 @@ def book_management(books: dict):
                         print("List of borrowers: ")
                         for borrowers in value[4]:
                             print("    " + borrowers)
+        else:
+            print("Invalid choice")
+            continue
 
 
 
