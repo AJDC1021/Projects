@@ -32,3 +32,12 @@ Also finds the highest rated film, and the average rating of the film in a file
 Caesar Cipher File, lets user input a certain amount of strings in a list, then shifts those strings two times
 Also displays the output after each shift
 ***
+
+
+
+
+**Day 6**
+Book management project, that handles books, lets users borrow, and logs.
+Through the use of dictionaries, lists, and tuples
+***
+
