@@ -1,7 +1,6 @@
 
 import datetime
 
-log_dict = {}
 
 def log_management(log_dict: dict):
     flag = True
@@ -16,7 +15,7 @@ def log_management(log_dict: dict):
     while True:
         print("")
         print("LOG MANAGMENT MENU")
-        print("[1] Visit libray (enter log details)")
+        print("[1] Visit library (enter log details)")
         print("[2] View all entries")
         print("[3] Transactions per day")
         print("[0] Return to Main Menu")
@@ -27,7 +26,7 @@ def log_management(log_dict: dict):
             Id = input("Input Log id (format L<number>): ")
             Id = Id[0].upper() + Id[1:]
             if Id[0] != "L":
-                print("Error! Invalid Book Format.")
+                print("Error! Invalid Log ID Format.")
                 continue
 
             for i in range(1, len(Id)):
@@ -41,7 +40,8 @@ def log_management(log_dict: dict):
             if not flag:
                 continue
 
-            if Id in logs_dict:
+            if Id in log_dict:
+                print("ID associated with another log")
                 continue
 
             Name = input("Enter name: ")
@@ -102,7 +102,6 @@ def log_management(log_dict: dict):
                 continue
             
             log_dict[Id] = [Name, Date_init, time_final, purpose]
-            print(log_dict)
         elif choice == "2":
             if not log_dict:
                 print("No log entries yet!")
@@ -146,9 +145,7 @@ def log_management(log_dict: dict):
                             print("Purpose: " + value[3])
             else:
                 print("No logs in the date specified")
-
-            
-
-
-log_management(log_dict)
+        else:
+            print("Invalid Choice")
+            continue
         

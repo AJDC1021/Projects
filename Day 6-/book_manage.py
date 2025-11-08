@@ -1,10 +1,10 @@
 import datetime
 
-book_dict = {}
 
-def book_management(books: dict):
+def book_management(books: dict, logs: dict, borrow: dict):
     format_string    = "%d %b %Y"
     new_entry = []
+    deleted_book_id = []
     flag = True
 
     while True:
@@ -44,6 +44,11 @@ def book_management(books: dict):
             
             if Id in books:
                 print("Book ID already taken")
+                continue
+            
+            if Id in deleted_book_id:
+                print("Book ID is associated with formerly deleted book, choose another one for record safety")
+                continue
 
             Title = input("Enter title of book: ")
             if not Title:
@@ -108,7 +113,7 @@ def book_management(books: dict):
                 continue
             else:
                 key_to_delete = to_delete[0]
-
+            deleted_book_id.append(key_to_delete)
             del books[key_to_delete]
             print("Deleted Successfully")
 
@@ -122,6 +127,8 @@ def book_management(books: dict):
                 print("")
                 delete_all_choice = input("Are you sure you want to delete all books? (y/n)")
                 if delete_all_choice == "y" or delete_all_choice == "Y":
+                    for key in books.keys():
+                        deleted_book_id.append(key)
                     books.clear()
                     break
                 elif delete_all_choice == "n" or delete_all_choice == "N":
@@ -155,18 +162,19 @@ def book_management(books: dict):
                 for book_ids in found_books:
                     print(book_ids)
                 to_view = input("Type the book ID of the one you want to view: ")
-                if Id[0].upper() != "B":
+                if to_view[0].upper() != "B":
                     print("Error! Invalid Book Format.")
                     continue
 
-                for i in range(1, len(Id)):
+                for i in range(1, len(to_view)):
                     try:
-                        int(Id[i])
+                        int(to_view[i])
                     except ValueError:
                         flag = False
                         print("Error, your id is an invalid format")
                         break
                 print("")
+                found_items= []
                 found_details = books[to_view]
                 print("Detail of book: " + found_books[0])
                 print("Title: " + found_details[0])
@@ -175,10 +183,21 @@ def book_management(books: dict):
                 print("Status: " + found_details[3])
                 if found_details[4]:
                     print("List of borrowers: ")
-                    for borrowers in found_details[4]:
-                        print("    " + borrowers)
+                    for borrow_id in found_details[4]:
+                        for key, value in borrow.items():
+                            if key == borrow_id:
+                                associated_log = value[1]
+                                for k,v in logs.items():
+                                    if k == associated_log:
+                                        name_of_borrower = v[0]
+                                        tuple_borrow = (borrow_id, name_of_borrower)
+                                        found_items.append(tuple_borrow)
+                    for borrowers in found_items:
+                        print(borrowers[0] + " - " + borrowers[1])
+
             else:
                 print("")
+                found_items = []
                 found_details = books[found_books[0]]
                 print("Detail of book: " + found_books[0])
                 print("Title: " + found_details[0])
@@ -187,8 +206,18 @@ def book_management(books: dict):
                 print("Status: " + found_details[3])
                 if found_details[4]:
                     print("List of borrowers: ")
-                    for borrowers in found_details[4]:
-                        print("    " + borrowers)
+                    for borrow_id in found_details[4]:
+                        for key, value in borrow.items():
+                            if key == borrow_id:
+                                associated_log = value[1]
+                                for k,v in logs.items():
+                                    if k == associated_log:
+                                        name_of_borrower = v[0]
+                                        tuple_borrow = (borrow_id, name_of_borrower)
+                                        found_items.append(tuple_borrow)
+                    for borrowers in found_items:
+                        print(borrowers[0] + " - " + borrowers[1])
+
 
             print(" ")
 
@@ -214,6 +243,7 @@ def book_management(books: dict):
                 continue
             
             if len(found_books) > 1:
+                found_items = []
                 print("More than one book with the same title found")
                 print("IDs with the same title")
                 for book_ids in found_books:
@@ -226,22 +256,34 @@ def book_management(books: dict):
                     print("Status: " + found_details[3])
                     if found_details[4]:
                         print("List of borrowers: ")
-                        for borrowers in found_details[4]:
-                            print("    " + borrowers)
+                        for borrow_id in found_details[4]:
+                            for key, value in borrow.items():
+                                if key == borrow_id:
+                                    associated_log = value[1]
+                                    for k,v in logs.items():
+                                        if k == associated_log:
+                                            name_of_borrower = v[0]
+                                            tuple_borrow = (borrow_id, name_of_borrower)
+                                            found_items.append(tuple_borrow)
+                        for borrowers in found_items:
+                            print(borrowers[0] + " - " + borrowers[1])
+
+
                 to_edit = input("Type the book ID of the one you want to edit: ")
-                if Id[0].upper() != "B":
+                if to_edit[0].upper() != "B":
                     print("Error! Invalid Book Format.")
                     continue
 
-                for i in range(1, len(Id)):
+                for i in range(1, len(to_edit)):
                     try:
-                        int(Id[i])
+                        int(to_edit[i])
                     except ValueError:
                         flag = False
                         print("Error, your id is an invalid format")
                         break
             else:
                 found_details = books[found_books[0]]
+                found_items = []
                 print("")
                 print("Detail of book: " + found_books[0])
                 print("Title: " + found_details[0])
@@ -250,9 +292,18 @@ def book_management(books: dict):
                 print("Status: " + found_details[3])
                 if found_details[4]:
                     print("List of borrowers: ")
-                    for borrowers in found_details[4]:
-                        print("    " + borrowers)
-                to_edit = found_books[0]
+                    for borrow_id in found_details[4]:
+                        for key, value in borrow.items():
+                            if key == borrow_id:
+                                associated_log = value[1]
+                                for k,v in logs.items():
+                                    if k == associated_log:
+                                        name_of_borrower = v[0]
+                                        tuple_borrow = (borrow_id, name_of_borrower)
+                                        found_items.append(tuple_borrow)
+                    for borrowers in found_items:
+                        print(borrowers[0] + " - " + borrowers[1])
+                to_edit = found_books[0]  
             print(" ")
             Title = input("Enter new title of book: ")
             Author = input("Enter new author of book: ")
@@ -274,21 +325,22 @@ def book_management(books: dict):
             if not books:
                 print("Book dictionary is empty.")
                 continue
-            print("List of unavailable books: ")
-            for key,value in books.item():
+            flagger = False
+            for value in books.values():
                 if value[3] == "Unavailable":
-                    print("Title: " + value[0])
-                    print("Author: " + value[1])
-                    print("Date Published: " + value[2])
-                    if value[4]:
-                        print("List of borrowers: ")
-                        for borrowers in value[4]:
-                            print("    " + borrowers)
+                    flagger = True
+                    break
+            if flagger:
+                print("List of unavailable books: ")
+                for key,value in books.items():
+                    if value[3] == "Unavailable":
+                        print("Title: " + value[0])
+                        print("Author: " + value[1])
+                        print("Date Published: " + value[2])
+                        print("Last borrower: " + value[4][len(value[4])-1])
+                        print("Date of return " + borrow[value[4][len(value[4])-1]][2])                  
+            else:
+                print("No unavailable books")
         else:
             print("Invalid choice")
             continue
-
-
-
-
-book_management(book_dict)

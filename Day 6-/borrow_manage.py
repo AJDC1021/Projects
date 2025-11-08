@@ -1,9 +1,5 @@
 import datetime
 
-borrow_dict = {}
-log_dict = {}
-books_dict ={'B10': ['Atlas', 'Martin Steward', '1 Jan 2019', 'Available', []], 'B2': ['Pony', 'Robin Martin', '1 Jan 1898', 'Available', []], 'B6': ["Bin's Crooked", 'Tyler Oak', '1 Jan 2017', 'Available', []]}
-
 def log_create_for_borrow(log_dict: dict):
     flag = True
     purpose_list = ["borrow", "return", "visit"]
@@ -27,6 +23,10 @@ def log_create_for_borrow(log_dict: dict):
                 break
         
         if not flag:
+            continue
+        
+        if Id in log_dict:
+            print("ID associated with another log")
             continue
 
         Name = input("Enter name: ")
@@ -209,17 +209,14 @@ def borrow_management(borrow: dict, logs: dict, books: dict):
             if Id in borrow:
                 print("Borrow ID is already existing")
                 continue
+
             Borrow_ID = Id
             Book_ID = book_id_to_borrow
-            print(Book_ID)
             value_to_append = books[Book_ID]
             value_to_append[4].append(Borrow_ID)
             books[Book_ID][3] = "Unavailable"
             logs[Log_ID] = [Name, Date_init, time_final, purpose]
             borrow[Borrow_ID] = [Book_ID, Log_ID, date_return]
-            print(borrow)
-            print(books)
-            print(logs)
         elif choice == "2":
             if not borrow:
                 print("No books borrowed yet")
@@ -247,8 +244,6 @@ def borrow_management(borrow: dict, logs: dict, books: dict):
                     books[book_to_return][3] = "Available"
                     Log_ID, Name, Date_init, time_final, purpose = log_create_for_borrow(logs)
                     logs[Log_ID] = [Name, Date_init, time_final, purpose]
-                    print(logs)
-                    print(books)
                 except KeyError:
                     print("Invalid ID inputted")
             else:
@@ -299,21 +294,6 @@ def borrow_management(borrow: dict, logs: dict, books: dict):
                         print("Borrower: " + logs[value[1]][0])
             else:
                 print("No books to return that day")
-
-
-        
-
-                
-
-
-
-
-            
-
-
-
-
-
-
-
-borrow_management(borrow_dict, log_dict, books_dict)
+        else:
+            print("Invalid Choice")
+            continue
