@@ -1,0 +1,26 @@
+Title,Genre,Rating
+Inception,Sci-Fi,8.8
+Interstellar,Sci-Fi,8.6
+The Matrix,Sci-Fi,8.7
+Blade Runner 2049,Sci-Fi,8.0
+Ex Machina,Sci-Fi,7.7
+The Dark Knight,Action,9.0
+Mad Max: Fury Road,Action,8.1
+John Wick,Action,7.4
+Gladiator,Action,8.5
+Avengers: Endgame,Action,8.4
+The Shawshank Redemption,Drama,9.3
+Forrest Gump,Drama,8.8
+The Green Mile,Drama,8.6
+A Beautiful Mind,Drama,8.2
+Good Will Hunting,Drama,8.3
+Parasite,Thriller,8.5
+Se7en,Thriller,8.6
+Gone Girl,Thriller,8.1
+Prisoners,Thriller,8.1
+Shutter Island,Thriller,8.2
+The Hangover,Comedy,7.7
+Superbad,Comedy,7.6
+Step Brothers,Comedy,6.9
+The Big Lebowski,Comedy,8.1
+Groundhog Day,Comedy,8.0
