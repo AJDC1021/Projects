@@ -1,13 +1,13 @@
 import csv
 
-genre_list = []
-ratings_dict = {}
-amount = 0
-total = 0
-all_ratings = []
-all_lines = []
 
 while True:
+    genre_list = []
+    ratings_dict = {}
+    amount = 0
+    total = 0
+    all_ratings = []
+    all_lines = []
     print("===MENU===")
     print("[1] START")
     print("[2] EXIT")
@@ -85,7 +85,8 @@ while True:
         print("===HIGHEST RATING PER GENRE===")
         for key,value in highest_grade_list.items():
             high_grade = str(value['grade'])
-            print("The highest rating per genre is/are ", end='')
+            print("The highest rating in the genre of " + key + " is/are ", end='')
+            print(key + " is/are", end=' ')
             for i in range(len(value['titles'])):
                 if i == len(value['titles']) - 1:
                     print(value['titles'][i], end=' ')
@@ -97,7 +98,7 @@ while True:
         print("===LOWEST RATING PER GENRE===")
         for key,value in lowest_grade_list.items():
             low_grade = str(value['grade'])
-            print("The lowest rating per genre is/are ", end='')
+            print("The lowest rating in the genre of " + key + " is/are ", end='')
             for i in range(len(value['titles'])):
                 if i == len(value['titles']) - 1:
                     print(value['titles'][i], end=' ')
