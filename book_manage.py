@@ -1,7 +1,5 @@
 from datetime import datetime
 
-
-
 def wrong_option():
     while True:
         option = (input("Exit or Continue?: ")).lower()
@@ -22,7 +20,14 @@ def add_book(book_manage: dict):
                 break
             else:
                 continue
-            
+        try:
+            book_id[1]
+        except IndexError:
+            print("Error: Invalid ID Format")
+            if wrong_option(): 
+                break
+            else:
+                continue            
 
         for i in range(1,len(book_id)):
             try:
@@ -139,7 +144,7 @@ def delete_all_books(book_manage: dict):
             else:
                 continue
 
-def view_book(book_manage: dict, log_manage: dict): #add log_management later
+def view_book(book_manage: dict, log_manage: dict, borrow_manage: dict):
     while True:
         if not book_manage:
             print("Error: there is no book in the library yet.")
@@ -170,15 +175,19 @@ def view_book(book_manage: dict, log_manage: dict): #add log_management later
                 print("STATUS: " + value['status'])
                 if value['list_of_borrowers']:
                     print("LIST OF BORROWERS:")
-                    for borrower in value['list_of_borrowers']:
-                        print("    " + str(borrower) + ": ", end='')
-                        for key1, value1 in log_manage.items():
-                            if key1 == borrower:
-                                print(value1['name'])
+                    for borrow_id in value['list_of_borrowers']:
+                        print("    " + str(borrow_id) + ": ", end='')
+                        for key, value in borrow_manage.items():
+                            if key == borrow_id:
+                                log_id = value['log_id']
+                        for key, value in log_manage.items():
+                            if key == log_id:
+                                print(value['name'])
+
                 print()
         break
 
-def view_all_books(book_manage: dict):
+def view_all_books(book_manage: dict, log_manage: dict, borrow_manage: dict):
     while True:
         if not book_manage:
             print("Error: there is no book in the library yet.")
@@ -194,17 +203,24 @@ def view_all_books(book_manage: dict):
             print("STATUS: " + value['status'])
             if value['list_of_borrowers']:
                 print("LIST OF BORROWERS:")
-                for borrower in value['list_of_borrowers']:
-                    print("    " + str(borrower) + ": ", end='')
-                    for key1, value1 in log_manage.items():
-                        if key1 == borrower:
-                            print(value1['name'])
+                for borrow_id in value['list_of_borrowers']:
+                    print("    " + str(borrow_id) + ": ", end='')
+                    
+                    for key, value in borrow_manage.items():
+                        if key == borrow_id:
+                            log_id = value['log_id']
+                    
+                    for key, value in log_manage.items():
+                        if key == log_id:
+                            print(value['name'])
+
+                            
             print()
         break
 
 
 
-def edit_book(book_manage:dict):
+def edit_book(book_manage:dict, log_manage: dict, borrow_manage: dict):
     while True:
         if not book_manage:
             print("Error: there is no book in the library yet.")
@@ -241,11 +257,15 @@ def edit_book(book_manage:dict):
                     print("STATUS: " + value['status'])
                     if value['list_of_borrowers']:
                         print("LIST OF BORROWERS:")
-                        for borrower in value['list_of_borrowers']:
-                            print("    " + str(borrower) + ": ", end='')
-                            for key1, value1 in log_manage.items():
-                                if key1 == borrower:
-                                    print(value1['name'])
+                        for borrow_id in value['list_of_borrowers']:
+                            print("    " + str(borrow_id) + ": ", end='')
+                            for key, value in borrow_manage.items():
+                                if key == borrow_id:
+                                    log_id = value['log_id']
+                            for key, value in log_manage.items():
+                                if key == log_id:
+                                    print(value['name'])
+
                     print()
             select_edit = input("Enter the Book ID of the book you wish to edit: ")
             if select_edit[0] != 'B':
@@ -308,8 +328,14 @@ def edit_book(book_manage:dict):
         print("AUTHOR: " + new_author)
         print("STATUS: " + status)
         if list_of_borrowers:
-            for borrowers in list_of_borrowers:
-                print("   " + str(borrowers))
+            for borrow_id in list_of_borrowers:
+                print("   " + str(borrow_id) + ": ", end='')
+                for key, value in borrow_manage.items():
+                    if key == borrow_id:
+                        log_id = value['log_id']
+                for key, value in log_manage.items():
+                    if key == log_id:
+                        print(value['name'])
         print()
         break
 
@@ -318,71 +344,79 @@ def view_pending(book_manage: dict, log_manage: dict, borrow_manage: dict):
         if not book_manage:
             print("Error: there is no book in the library yet.")
             break
-
-        print("===THESE ARE ALL THE UNAVAILABLE BOOKS===")
+        found = False
         for key, value in book_manage.items():
             if value['status'] == "Unavailable":
-                print("BOOK ID: " + str(key))
-                print("TITLE: " + value['title'])
-                print("AUTHOR: " + value['author'])
-                print("DATE PUBLISHED: " + str(value['date_published']))
-                last_idx = len(value['list_of_borrowers']) - 1
-                last_borrower = value['list_of_borrowers'][last_idx]
-                print("LAST BORROWER: " + str(last_borrower) + ' - ', end='')
-                for key1, value1 in log_manage.items():
-                    if key1 == last_borrower:
-                        print(value1['name'])
-                for values in borrow_manage.values():
-                    if values['log_id'] == last_borrower:
-                        print("DATE OF RETURN: " + values['date_of_return'])
-                
+                found = True
+                break
+        if found:
+            print("===THESE ARE ALL THE UNAVAILABLE BOOKS===")
+            for key, value in book_manage.items():
+                if value['status'] == "Unavailable":
+                    print("BOOK ID: " + str(key))
+                    print("TITLE: " + value['title'])
+                    print("AUTHOR: " + value['author'])
+                    print("DATE PUBLISHED: " + str(value['date_published']))
+                    last_idx = len(value['list_of_borrowers']) - 1
+                    borrow_id = value['list_of_borrowers'][last_idx]
+                    print("LAST BORROWER: " + str(borrow_id) + ' - ', end='')
+                    for key, value in borrow_manage.items():
+                        if key == borrow_id:
+                            log_id = value['log_id']
+
+                    for key, value in log_manage.items():
+                        if key == log_id:
+                            print(value['name'])
+                    
+                    for key, value in borrow_manage.items():
+                        if key == borrow_id:
+                            print("EXPECTED RETURN: " + value['date_return'])
+            break
+        else:
+            print("No unavailable books")
+            break
+
+def book_manage(book_manage: dict, log_manage: dict, borrow_manage: dict):
+    while True:
+        print()
+        print("==== BOOK MANAGEMENT MENU ====")
+        print("[1] ADD BOOK")
+        print("[2] DELETE BOOK")
+        print("[3] DELETE ALL BOOKS")
+        print("[4] VIEW BOOK")
+        print("[5] VIEW ALL BOOKS")
+        print("[6] EDIT BOOK")
+        print("[7] VIEW PENDING BOOKS")
+        print("[0] RETURN TO MAIN MENU")
+
+        try:
+            select = int(input("Enter your input: "))
+        except ValueError:
+            print("Invalid input")
+            continue
+        if select == 1:
+            add_book(book_manage)
+            print(book_manage)
+        elif select == 2:
+            delete_book(book_manage)
+            print(book_manage)
+        elif select == 3:
+            delete_all_books(book_manage)
+            print(book_manage)
+        elif select == 4:
+            view_book(book_manage, log_manage, borrow_manage)
+        elif select == 5:
+            view_all_books(book_manage, log_manage, borrow_manage)
+        elif select == 6:
+            edit_book(book_manage, log_manage, borrow_manage)
+            print(book_manage)
+        elif select == 7:
+            view_pending(book_manage, log_manage, borrow_manage)
+        elif select == 0:
+            print("Going back to main menu!")
+            break
+        else:
+            print("Invalid option")
 
 
-
-
-                
-    
-           
-
-
-log_manage={}
-book_manage = {}
-borrow_manage={}
-while True:
-    print("====BOOK MANAGEMENT MENU====")
-    print("[1] ADD BOOK")
-    print("[2] DELETE BOOK")
-    print("[3] DELETE ALL BOOKS")
-    print("[4] VIEW BOOK")
-    print("[5] VIEW ALL BOOKS")
-    print("[6] EDIT BOOK")
-    print("[7] VIEW PENDING BOOKS")
-    print("[0] RETURN TO MAIN MENU")
-
-    try:
-        select = int(input("Enter your input: "))
-    except ValueError:
-        print("Invalid input")
-        continue
-    if select == 1:
-        add_book(book_manage)
-        print(book_manage)
-    elif select == 2:
-        delete_book(book_manage)
-        print(book_manage)
-    elif select == 3:
-        delete_all_books(book_manage)
-        print(book_manage)
-    elif select == 4:
-        view_book(book_manage, log_manage)
-    elif select == 5:
-        view_all_books(book_manage)
-    elif select == 6:
-        edit_book(book_manage)
-        print(book_manage)
-    elif select == 0:
-        print("Going back to main menu!")
-        break
-    else:
-        print("Invalid option")
 
