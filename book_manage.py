@@ -29,15 +29,15 @@ def add_book(book_manage: dict):
             else:
                 continue            
 
-        for i in range(1,len(book_id)):
-            try:
+        try:
+            for i in range(1,len(book_id)):
                 int(book_id[i])
-            except ValueError:
-                print("Error: Invalid ID format")
-                if wrong_option(): 
-                    break
-                else:
-                    continue
+        except ValueError:
+            print("Error: Invalid ID format")
+            if wrong_option(): 
+                break
+            else:
+                continue
             
 
         if book_id in book_manage:
@@ -275,15 +275,16 @@ def edit_book(book_manage:dict, log_manage: dict, borrow_manage: dict):
                 else:
                     continue
 
-            for i in range(1,len(select_edit)):
-                try:
+
+            try:
+                for i in range(1,len(select_edit)):
                     int(select_edit[i])
-                except ValueError:
-                    print("Error: Invalid ID format")
-                    if wrong_option(): 
-                        break
-                    else:
-                        continue
+            except ValueError:
+                print("Error: Invalid ID format")
+                if wrong_option(): 
+                    break
+                else:
+                    continue
             
             if select_edit not in list_to_edit:
                 print("Book ID specified not in options")

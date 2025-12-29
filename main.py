@@ -1,8 +1,10 @@
 import book_manage
 import log_manage
 import borrow_manage
+import csv
 
-books = { 
+books = {
+"""
     'B1': {
         'title': "Bible", 
         'author': "Jesus", 
@@ -24,9 +26,11 @@ books = {
         'status': "Available",
         'list_of_borrowers': ["BL5"] # Changed BL3 to BL2 to match borrows
     }
+"""
 }
 
 logs = {
+"""
     'L1': {
         'name': 'jeffrey',
         'date_of_log': '22 Feb 2022',
@@ -45,40 +49,52 @@ logs = {
         'time_of_log': '1:00 PM',
         'purpose': 'borrow'
     }
+"""
 }
 
 borrows = { 
+"""
     'BL1': {
         'book_id': 'B1',
         'log_id': 'L1',
-        'date_return': '9 Mar 2022'
+        'date_return': '9 Mar 2029'
     }, # Added missing comma
     'BL2': {
         'book_id': 'B2',
         'log_id': 'L2',
-        'date_return': '9 Nov 2022'    
+        'date_return': '9 Nov 2029'    
     },
     'BL5': {
         'book_id': 'B3',
         'log_id': 'L3',
-        'date_return': '9 Jan 2024'    
+        'date_return': '9 Jan 2020'    
     }
+"""
 }
 
 
+def load_file(file: str):
+    with open(file, mode='r', newline='') as file_reader:
+        file_load = csv.reader(file_reader, delimiter=',')
+        for line in file_load:
+            print(line)
+
+
+
 while True:
+    load_file("load_file.txt")
     print("=== MAIN MENU ===")
     print("[1] BOOK MANAGEMENT")
-    print("[2] LOG MANAGEMENT")
-    print("[3] BORROW MANAGEMENT")
+    print("[2] BORROW MANAGEMENT")
+    print("[3] LOG MANAGEMENT")
     print("[0] EXIT")
     select = input("Enter your input: ")
     if select == '1':
         book_manage.book_manage(books, logs, borrows)
     elif select == '2':
-        log_manage.log_manage(logs)
-    elif select == '3':
         borrow_manage.borrow_manage(books, logs, borrows)
+    elif select == '3':
+        log_manage.log_manage(logs)
     elif select == '0':
         print("Bye!")
         break

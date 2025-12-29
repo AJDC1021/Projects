@@ -30,15 +30,15 @@ def visit_library(log_manage: dict):
             else:
                 continue
 
-        for i in range(1, len(log_id)):
-            try:
+        try:
+            for i in range(1, len(log_id)):
                 int(log_id[i])
-            except ValueError:
-                print("Error: Invalid ID Format")
-                if wrong_option(): 
-                    break
-                else:
-                    continue
+        except ValueError:
+            print("Error: Invalid ID Format")
+            if wrong_option(): 
+                break
+            else:
+                continue
 
         if log_id in log_manage:
             print("Error: Log ID already taken")
@@ -228,7 +228,7 @@ def log_manage(log_manage: dict):
         print("[3] VIEW TRANSACTIONS PER DAY")
         print("[0] RETURN TO MAIN MENU")
         select = input("Enter your input: ")       
-        
+
         if select == '1':
             visit_library(log_manage)
         elif select == '2':
