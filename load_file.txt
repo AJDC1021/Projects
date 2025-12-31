@@ -1,13 +1,13 @@
-START_BOOK
-B1,Bible,Jesus,1 Jan 1990,Available,BL1
-B5,Bible,Jesus,1 Jan 1990,Available,BL2
-B9,Bible,Jesus,1 Jan 1990,Available,
-END_BOOK
+TUBSU_CPPL
+C2,Cjcmf,Kftvt,2 Kbo 2001,Bwbjmbcmf,CM2
+C6,Cjcmf,Kftvt,2 Kbo 2001,Bwbjmbcmf,CM3
+C0,Cjcmf,Kftvt,2 Kbo 2001,Bwbjmbcmf
+FOE_CPPL
 
-START_LOG
-L1,jeffrey,22 Feb 2022,2:30 PM,borrow
-END_LOG
+TUBSU_MPH
+M2,kfggsfz,23 Gfc 2023,3:31 QN,cpsspx
+FOE_MPH
 
-START_BORROW
-BL1,B1,L1,9 Mar 2029
-END_BORROW
+TUBSU_CPSSPX
+CM2,C2,M2,0 Nbs 2030
+FOE_CPSSPX

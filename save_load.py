@@ -1,4 +1,56 @@
 import csv
+import string
+
+lowercase = list(string.ascii_lowercase)
+uppercase = list(string.ascii_uppercase)
+digits = list(string.digits)
+shift = 1
+
+def encrypt(to_translate: str):
+    final = ''
+    for char in to_translate:
+        if char in lowercase:
+            char_idx = lowercase.index(char) + shift
+            if char_idx > 25:
+                char_idx = (char_idx % 26)
+            final += lowercase[char_idx]
+        elif char in uppercase:
+            char_idx = uppercase.index(char) + shift
+            if char_idx > 25:
+                char_idx = (char_idx % 26)
+            final += uppercase[char_idx]
+        elif char in digits:
+            char_idx = digits.index(char) + shift
+            if char_idx > 9:
+                char_idx = (char_idx % 10)
+            final += digits[char_idx]
+        else:
+            final += char
+    return final
+
+def decrypt(to_translate: str):
+    final = ''
+    for char in to_translate:
+        if char in lowercase:
+            char_idx = lowercase.index(char) - shift
+            if char_idx < 0:
+                char_idx = (char_idx % 26)
+            final += lowercase[char_idx]
+        elif char in uppercase:
+            char_idx = uppercase.index(char) - shift
+            if char_idx < 0:
+                char_idx = (char_idx % 26)
+            final += uppercase[char_idx]
+        elif char in digits:
+            char_idx = digits.index(char) - shift
+            if char_idx < 0:
+                char_idx = (char_idx % 10)
+            final += digits[char_idx]
+        else:
+            final += char
+    return final
+
+
 
 def load_file(file: str, book_manage: dict, log_manage: dict, borrow_manage: dict):
     with open(file, mode='r', newline='') as file_reader:
@@ -7,22 +59,23 @@ def load_file(file: str, book_manage: dict, log_manage: dict, borrow_manage: dic
         turn = 0
         for line in file_load:
             if line:
-                if line[0] == "START_BOOK":
+                turn_switcher = decrypt(line[0])
+                if turn_switcher == "START_BOOK":
                     turn = 1
                     continue
-                elif line[0] == "END_BOOK":
+                elif turn_switcher == "END_BOOK":
                     turn = 0
                     continue
-                elif line[0] == "START_LOG":
+                elif turn_switcher == "START_LOG":
                     turn = 2
                     continue
-                elif line[0] == "END_LOG":
+                elif turn_switcher == "END_LOG":
                     turn = 0
                     continue
-                elif line[0] == "START_BORROW":
+                elif turn_switcher == "START_BORROW":
                     turn = 3
                     continue
-                elif line[0] == "END_BORROW":
+                elif turn_switcher == "END_BORROW":
                     turn = 0
                     continue
                 
@@ -30,15 +83,19 @@ def load_file(file: str, book_manage: dict, log_manage: dict, borrow_manage: dic
                     continue
                 elif turn == 1:
                     book_id = str(line[0])
-                    title = line[1]
-                    author = line[2]
-                    date_published = line[3]
-                    status = line[4]
+                    book_id = decrypt(book_id)
+                    title = decrypt(line[1])
+                    author = decrypt(line[2])
+                    date_published = decrypt(line[3])
+                    status = decrypt(line[4])
                     list_of_borrowers = []
-                    if line[5]:
-                        for i in range(5,len(line)):
-                            borrower = line[i]
-                            list_of_borrowers.append(borrower)
+                    try:
+                        if line[5]:
+                            for i in range(5,len(line)):
+                                borrower = decrypt(line[i])
+                                list_of_borrowers.append(borrower)
+                    except IndexError:
+                        pass
                     book_manage[book_id] = {
                         'title': title,
                         'author': author,
@@ -47,11 +104,11 @@ def load_file(file: str, book_manage: dict, log_manage: dict, borrow_manage: dic
                         'list_of_borrowers': list_of_borrowers
                     }
                 elif turn == 2:
-                    log_id = line[0]
-                    name = line[1]
-                    date_of_log = line[2]
-                    time_of_log = line[3]
-                    purpose = line[4]
+                    log_id = decrypt(line[0])
+                    name = decrypt(line[1])
+                    date_of_log = decrypt(line[2])
+                    time_of_log = decrypt(line[3])
+                    purpose = decrypt(line[4])
                     log_manage[log_id] = {
                         'name': name,
                         'date_of_log': date_of_log,
@@ -59,10 +116,10 @@ def load_file(file: str, book_manage: dict, log_manage: dict, borrow_manage: dic
                         'purpose':purpose
                     }
                 elif turn == 3:
-                    borrow_id = line[0]
-                    book_id = line[1]
-                    log_id = line[2]
-                    date_return = line[3]
+                    borrow_id = decrypt(line[0])
+                    book_id = decrypt(line[1])
+                    log_id = decrypt(line[2])
+                    date_return = decrypt(line[3])
                     borrow_manage[borrow_id] = {
                         'book_id': book_id,
                         'log_id': log_id,
@@ -75,56 +132,90 @@ def save_file(file: str, book_manage:dict, log_manage:dict, borrow_manage: dict)
     with open(file, mode='w', newline='') as file_writer:
         if book_manage:
             start = "START_BOOK\n"
+            start = encrypt(start)
             file_writer.write(start)
             for key, value in book_manage.items():
-                file_writer.write(key)
+
+                book_id = encrypt(key)
+                file_writer.write(book_id)
                 file_writer.write(',')
-                file_writer.write(value['title'])
+
+                title = encrypt(value['title'])
+                file_writer.write(title)
                 file_writer.write(',')
-                file_writer.write(value['author'])
+
+                author = encrypt(value['author'])
+                file_writer.write(author)
                 file_writer.write(',')
-                file_writer.write(value['date_published'])
+
+                date_published = encrypt(value['date_published'])
+                file_writer.write(date_published)
                 file_writer.write(',')
-                file_writer.write(value['status'])
+
+                status = encrypt(value['status'])
+                file_writer.write(status)
+
                 list_of_borrowers = value['list_of_borrowers']
                 if len(list_of_borrowers)>0:
                     for i in range(0, len(list_of_borrowers)):
                         file_writer.write(',')
-                        file_writer.write(list_of_borrowers[i])
-                        #if i != (len(list_of_borrowers)-1):
-                            #file_writer.write(',')
+                        borrower = encrypt(list_of_borrowers[i])
+                        file_writer.write(borrower)
+
                 file_writer.write('\n')
             end = "END_BOOK\n"
+            end = encrypt(end)
             file_writer.write(end)
         file_writer.write('\n')
         if log_manage:
             start = "START_LOG\n"
+            start = encrypt(start)
             file_writer.write(start)
             for key, value in log_manage.items():
-                file_writer.write(key)
+                log_id = encrypt(key)
+                file_writer.write(log_id)
                 file_writer.write(',')
-                file_writer.write(value['name'])
+
+                name = encrypt(value['name'])
+                file_writer.write(name)
                 file_writer.write(',')
-                file_writer.write(value['date_of_log'])
+
+                date_of_log = encrypt(value['date_of_log'])
+                file_writer.write(date_of_log)
                 file_writer.write(',')
-                file_writer.write(value['time_of_log'])
+
+                time_of_log = encrypt(value['time_of_log'])
+                file_writer.write(time_of_log)
                 file_writer.write(',')
-                file_writer.write(value['purpose'])
+
+                purpose = encrypt(value['purpose'])
+                file_writer.write(purpose)
                 file_writer.write('\n')
             end = "END_LOG\n"
+            end = encrypt(end)
             file_writer.write(end)
         file_writer.write('\n')
         if borrow_manage:
             start = "START_BORROW\n"
+            start = encrypt(start)
             file_writer.write(start)
             for key, value in borrow_manage.items():
-                file_writer.write(key)
+                borrow_id = encrypt(key)
+                file_writer.write(borrow_id)
                 file_writer.write(',')
-                file_writer.write(value['book_id'])
+
+
+                book_id = encrypt(value['book_id'])
+                file_writer.write(book_id)
                 file_writer.write(',')
-                file_writer.write(value['log_id'])
+
+                log_id = encrypt(value['log_id'])
+                file_writer.write(log_id)
                 file_writer.write(',')
-                file_writer.write(value['date_return'])
+
+                date_return = encrypt(value['date_return'])
+                file_writer.write(date_return)
                 file_writer.write('\n')
             end = "END_BORROW\n"
+            end = encrypt(end)
             file_writer.write(end)
