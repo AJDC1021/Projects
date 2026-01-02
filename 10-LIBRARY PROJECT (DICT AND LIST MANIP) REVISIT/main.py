@@ -11,9 +11,6 @@ borrows = {}
 
 save_load.load_file("load_file.txt", books, logs, borrows)
 while True:
-    print(books)
-    print(logs)
-    print(borrows)
     print("=== MAIN MENU ===")
     print("[1] BOOK MANAGEMENT")
     print("[2] BORROW MANAGEMENT")
