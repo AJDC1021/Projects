@@ -47,7 +47,7 @@ int primeChecker(int num, int num_copy){
         if (num % dividor == 0){
             return -1;
         }
-        primeChecker(num, dividor);
+        return primeChecker(num, dividor);
     }
 }
 
