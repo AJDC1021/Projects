@@ -18,7 +18,7 @@ void input_numbers(int* array, int array_size){
     for (int i=0; i<array_size; i++){
         array[i] = *(array_copy + i);
     }
-
+    free(array_copy);
 }
 
 void print_array(int* array, int array_size){
@@ -113,6 +113,7 @@ int main(){
             all_factor_finder(array, array_size);
 
         } else if (choice == 3){
+            free(array);
             printf("BYE!\n");
             break;
         } else{
